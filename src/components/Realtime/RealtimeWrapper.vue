@@ -330,6 +330,30 @@ export default {
       hotel: this.$route.params.hotel
     })
     this.getSettings()
+    if (('Notification' in window)) {
+      if (Notification.permission === 'granted') {
+        this.notify = true
+      }
+      // notification supported
+      if (Notification.permission !== 'denied') {
+        Notification.requestPermission((permission) => {
+          if (permission === 'granted') {
+            this.notify = true
+          }
+        })
+      }
+    }
+  },
+  sockets: {
+    backNewSession: function () {
+      if (this.notify) {
+        let not = new Notification('Nuovo utente', {
+          icon: 'https://i.imgur.com/MLZSKyA.jpg',
+          body: 'Nuovo utente connesso al BOL'
+        })
+        setTimeout(not.close.bind(not), 9000)
+      }
+    }
   },
   data () {
     return {
@@ -337,7 +361,8 @@ export default {
       overrideDialog: false,
       currentRoom: null,
       selectedRate: null,
-      newPrice: 0
+      newPrice: 0,
+      notify: false
     }
   },
   methods: {
