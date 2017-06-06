@@ -318,7 +318,7 @@
   }
   .erm-realtime-new-message{
     color: #F44336;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 }
 </style>
@@ -445,7 +445,7 @@ export default {
       if (session.chat) {
         return session.chat.filter((message) => {
           return message.new === true
-        })
+        }).length
       }
     }
   },
