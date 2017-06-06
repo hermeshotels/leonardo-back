@@ -18,6 +18,7 @@
             <mu-avatar src="https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Fusers-6%2F100%2F654854-user-women-512.png&f=1" slot="leftAvatar"/>
             <span slot="describe">
               <span style="color: rgba(255, 255, 255, .87)">{{session.position}} - {{session.time | date('HH:MM')}}</span>
+              <div class="erm-realtime-new-message" v-if="getSessioNewMessages(session) > 0">{{getSessioNewMessages(session)}} nuovo messaggio</div>
             </span>
             <mu-icon value="chat_bubble" style="color: rgba(255, 255, 255, .87)" slot="right"/>
           </mu-list-item>
@@ -315,6 +316,10 @@
       color: #c62828;
     }
   }
+  .erm-realtime-new-message{
+    color: #F44336;
+    font-size: 1rem;
+  }
 }
 </style>
 <script>
@@ -353,6 +358,15 @@ export default {
         })
         setTimeout(not.close.bind(not), 9000)
       }
+    },
+    backNewMessage: function (payload) {
+      if (this.notify) {
+        let not = new Notification('Nuovo messaggio chat', {
+          icon: 'https://i.imgur.com/MLZSKyA.jpg',
+          body: payload.message.substring(0, 100)
+        })
+        setTimeout(not.close.bind(not), 9000)
+      }
     }
   },
   data () {
@@ -387,6 +401,11 @@ export default {
     },
     setSession (session) {
       this.setCurrentSession(session)
+      if (session.chat) {
+        session.chat.forEach((message) => {
+          message.new = false
+        })
+      }
     },
     setRoom (room) {
       this.currentRoom = room
@@ -421,6 +440,13 @@ export default {
         rate: this.selectedRate,
         newPrice: this.newPrice
       })
+    },
+    getSessioNewMessages (session) {
+      if (session.chat) {
+        return session.chat.filter((message) => {
+          return message.new === true
+        })
+      }
     }
   },
   watch: {

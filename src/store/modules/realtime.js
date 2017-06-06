@@ -18,7 +18,6 @@ const mutations = {
     state.sessions.push(session)
   },
   SOCKET_BACKENDSESSION (state, sessionid) {
-    console.log('end session ' + sessionid)
     let session = state.sessions.findIndex((session) => {
       return session.id === session.id
     })

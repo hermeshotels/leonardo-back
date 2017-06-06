@@ -1,7 +1,7 @@
 <template>
 <div class="erm-session-chat-wrapper">
   <div class="erm-chat-messages">
-    <div class="erm-chat-message-wrapper" v-for="message in session.chat" :class="{front: message.from === 'front', back: message.from === 'back'}">
+    <div class="erm-chat-message-wrapper" ref="chatMessages" v-for="message in session.chat" :class="{front: message.from === 'front', back: message.from === 'back'}">
       <span class="erm-chat-message" v-html="message.message"></span>
     </div>
   </div>
@@ -44,11 +44,15 @@ export default {
         hotel: this.session.hotel,
         sessionid: this.session.sessionid,
         from: 'back',
+        new: true,
         message: this.message
       }
       this.newMessage(data)
       this.$socket.emit('new-chat-message', data)
       this.message = ''
+      setTimeout(() => {
+        this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight
+      }, 10)
     }
   }
 }
@@ -65,6 +69,7 @@ export default {
   .erm-chat-messages{
     padding-bottom: 60px;
     padding: 2em;
+    height: 100%;
     .erm-chat-message-wrapper{
       display: flex;
       &.front{
