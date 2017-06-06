@@ -39,6 +39,10 @@
           </h1>
         </mu-flexbox-item>
       </mu-flexbox>
+      <div class="erm-session-screen-share" id="erm-user-screen" v-show="realtimeView">
+        <div class="erm-realtime-frame-close" @click="toggleRealtimeView">Nascondi</div>
+        <iframe id="erm-user-screen-frame"></iframe>
+      </div>
       <session-chat v-if="currentSession" :session="currentSession"></session-chat>
     </div>
     <!-- end of chat -->
@@ -63,7 +67,8 @@
             <mu-tooltip label="Attuale posizione dell'utente" :show="positionTip" :trigger="$refs.positionInfo" :touch="true" />
           </div>
           <div class="erm-realtime-detail-label">
-            {{currentSession.position}}
+            {{currentSession.position}} <br>
+            <a href="#" @click.prevent="toggleRealtimeView"><i class="material-icons">pageview</i> Vedi in tempo reale</a>
           </div>
         </div>
 
@@ -291,6 +296,9 @@
         padding-left: 1em;
         padding-right: 1em;
         font-size: 15px;
+        i{
+          vertical-align: middle;
+        }
         img{
           vertical-align: middle;
           margin-right: 10px;
@@ -319,6 +327,36 @@
   .erm-realtime-new-message{
     color: #F44336;
     font-size: 1.2rem;
+  }
+  #erm-user-screen{
+    position: fixed;
+    width: 90%;
+    height: 90%;
+    z-index: 999;
+    background: #FFF;
+    box-shadow: 0px 0px 40px rgba(0,0,0,0.3);
+    top: 5%;
+    border-radius: 3px;
+    left: 5%;
+    .erm-realtime-frame-close{
+      width: 100px;
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -20px;
+      margin: 0 auto;
+      background: #ff4081;
+      border-radius: 20px;
+      padding: 8px;
+      color: #FFF;
+      text-align: center;
+    }
+    #erm-user-screen-frame{
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
   }
 }
 </style>
@@ -376,13 +414,17 @@ export default {
       currentRoom: null,
       selectedRate: null,
       newPrice: 0,
-      notify: false
+      notify: false,
+      realtimeView: false
     }
   },
   methods: {
     ...mapMutations([
       'setCurrentSession'
     ]),
+    toggleRealtimeView () {
+      this.realtimeView = !this.realtimeView
+    },
     bestRate (rates) {
       return _.minBy(rates, 'total')
     },
@@ -452,6 +494,13 @@ export default {
   watch: {
     chatActive: function () {
       this.saveSettings()
+    },
+    'currentSession.latestShot': function (latestShot) {
+      if (this.realtimeView) {
+        let iframe = document.getElementById('erm-user-screen-frame')
+        let latestBlobShot = new Blob([latestShot], {type: 'text/html'})
+        iframe.src = window.URL.createObjectURL(latestBlobShot)
+      }
     }
   },
   computed: {

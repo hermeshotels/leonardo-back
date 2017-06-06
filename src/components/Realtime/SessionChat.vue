@@ -1,8 +1,8 @@
 <template>
 <div class="erm-session-chat-wrapper">
   <div class="erm-chat-messages">
-    <div class="erm-chat-message-wrapper" ref="chatMessages" v-for="message in session.chat" :class="{front: message.from === 'front', back: message.from === 'back'}">
-      <span class="erm-chat-message" v-html="message.message"></span>
+    <div class="erm-chat-message-wrapper" v-for="message in session.chat" :class="{front: message.from === 'front', back: message.from === 'back'}">
+      <span class="erm-chat-message" ref="chatMessages" v-html="message.message"></span>
     </div>
   </div>
   <div class="erm-chat-bar">
@@ -60,6 +60,7 @@ export default {
 <style lang="scss">
 .erm-session-chat-wrapper{
   height: 100%;
+  overflow: hidden;
   position: relative;
   .erm-chat-input{
     width: 100%;
@@ -67,9 +68,9 @@ export default {
     min-height: auto;
   }
   .erm-chat-messages{
-    padding-bottom: 60px;
     padding: 2em;
-    height: 100%;
+    height: calc(100% - 80px);
+    overflow: auto;
     .erm-chat-message-wrapper{
       display: flex;
       &.front{

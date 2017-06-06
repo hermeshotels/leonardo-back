@@ -83,6 +83,14 @@ const mutations = {
       Vue.set(session, 'userName', payload.data.username)
     }
   },
+  SOCKET_REALTIMESHOT (state, payload) {
+    let session = state.sessions.find((session) => {
+      return session.sessionid === payload.sessionid
+    })
+    if (session) {
+      Vue.set(session, 'latestShot', payload.shotData)
+    }
+  },
   newMessage (state, message) {
     let session = state.sessions.find((session) => {
       return session.sessionid === message.sessionid
