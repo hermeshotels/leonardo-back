@@ -424,6 +424,11 @@ export default {
     ]),
     toggleRealtimeView () {
       this.realtimeView = !this.realtimeView
+      if (this.realtimeView === true && this.currentSession.latestShot) {
+        let iframe = document.getElementById('erm-user-screen-frame')
+        let latestBlobShot = new Blob([this.currentSession.latestShot], {type: 'text/html'})
+        iframe.src = window.URL.createObjectURL(latestBlobShot)
+      }
     },
     bestRate (rates) {
       return _.minBy(rates, 'total')
@@ -496,7 +501,7 @@ export default {
       this.saveSettings()
     },
     'currentSession.latestShot': function (latestShot) {
-      if (this.realtimeView) {
+      if (this.realtimeView === true) {
         let iframe = document.getElementById('erm-user-screen-frame')
         let latestBlobShot = new Blob([latestShot], {type: 'text/html'})
         iframe.src = window.URL.createObjectURL(latestBlobShot)

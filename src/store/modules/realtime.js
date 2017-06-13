@@ -21,7 +21,7 @@ const mutations = {
     let session = state.sessions.findIndex((session) => {
       return session.id === session.id
     })
-    if (state.currentSession && sessionid + '===' + state.currentSession.sessionid) {
+    if (state.currentSession && sessionid === state.currentSession.sessionid) {
       state.currentSession = null
     }
     if (session > -1) {
